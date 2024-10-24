@@ -3,8 +3,32 @@
   "WorkspaceRootPath": "D:\\Learn\\Restaurant_UI_Customer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\StarRating.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\StarRating.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ProductDetailcpn.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\ProductDetailcpn.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\components\\Productcpn.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\Productcpn.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ListProductDetailcpm.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\ListProductDetailcpm.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\ProductDetail.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\ProductDetail.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\OurTeam.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\OurTeam.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,12 +38,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -43,15 +63,87 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "StarRating.css",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.css",
+              "RelativeDocumentMoniker": "src\\components\\StarRating.css",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.css",
+              "RelativeToolTip": "src\\components\\StarRating.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-10-24T17:51:23.565Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StarRating.jsx",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.jsx",
+              "RelativeDocumentMoniker": "src\\components\\StarRating.jsx",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\StarRating.jsx",
+              "RelativeToolTip": "src\\components\\StarRating.jsx",
+              "ViewState": "AQIAAAIAAAAAAAAAAAAuwA4AAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-10-24T17:48:32.914Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Productcpn.jsx",
               "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\Productcpn.jsx",
               "RelativeDocumentMoniker": "src\\components\\Productcpn.jsx",
               "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\Productcpn.jsx",
               "RelativeToolTip": "src\\components\\Productcpn.jsx",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAZAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAIAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-10-24T09:57:55.058Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T17:47:27.348Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProductDetailcpn.jsx",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ProductDetailcpn.jsx",
+              "RelativeDocumentMoniker": "src\\components\\ProductDetailcpn.jsx",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ProductDetailcpn.jsx",
+              "RelativeToolTip": "src\\components\\ProductDetailcpn.jsx",
+              "ViewState": "AQIAABgAAAAAAAAAAAAAACIAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-10-24T17:42:38.937Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ListProductDetailcpm.jsx",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ListProductDetailcpm.jsx",
+              "RelativeDocumentMoniker": "src\\components\\ListProductDetailcpm.jsx",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\components\\ListProductDetailcpm.jsx",
+              "RelativeToolTip": "src\\components\\ListProductDetailcpm.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-10-24T17:39:15.561Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "OurTeam.jsx",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\OurTeam.jsx",
+              "RelativeDocumentMoniker": "src\\pages\\OurTeam.jsx",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\OurTeam.jsx",
+              "RelativeToolTip": "src\\pages\\OurTeam.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-10-24T17:27:04.711Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProductDetail.jsx",
+              "DocumentMoniker": "D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\ProductDetail.jsx",
+              "RelativeDocumentMoniker": "src\\pages\\ProductDetail.jsx",
+              "ToolTip": "D:\\Learn\\Restaurant_UI_Customer\\src\\pages\\ProductDetail.jsx",
+              "RelativeToolTip": "src\\pages\\ProductDetail.jsx",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAAAEAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-10-24T17:27:00.721Z"
             }
           ]
         }

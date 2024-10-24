@@ -11,6 +11,7 @@ import OurTeam from './pages/OurTeam.jsx';
 import Testimonial from './pages/Testimonial.jsx';
 import Contact from './pages/Contact.jsx';
 import BookTable from './pages/BookTable.jsx';
+import ProductDetail from './pages/ProductDetail.jsx';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './style.css';
 
@@ -26,6 +27,7 @@ const App = () => {
                             <Route path="/about" element={<About />} />
                             <Route path="/service" element={<Service />} />
                             <Route path="/menu" element={<Menu />} />
+                             <Route path="/product/:id" element={<ProductDetail />} />
                             <Route path="/booking" element={<Booking />} />
                             <Route path="/our-team" element={<OurTeam />} />
                             <Route path="/testimonial" element={<Testimonial />} />

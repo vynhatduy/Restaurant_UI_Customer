@@ -1,4 +1,4 @@
-﻿import { Link, NavLink } from 'react-router-dom';
+﻿import { Link, NavLink, useLocation } from 'react-router-dom'; // Thêm useLocation
 import './frame.css';
 import logo from '../assets/logo/logo.png';
 import hero from '../assets/img/hero.png';
@@ -6,6 +6,7 @@ import bg_hero from '../assets/img/bg-hero.jpg';
 import React, { useState, useEffect } from 'react';
 
 const Header = () => {
+    const location = useLocation(); // Lấy thông tin location
     const [isScrolled, setIsScrolled] = useState(false);
 
     // Xử lý sự kiện cuộn trang
@@ -20,6 +21,9 @@ const Header = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
+    // Kiểm tra nếu là trang / hoặc /home
+    const showMiddle = location.pathname === '/' || location.pathname === '/home';
 
     return (
         <header>
@@ -50,21 +54,22 @@ const Header = () => {
                                 </ul>
                             </li>
                             <li><NavLink to="/contact" activeClassName="active">Contact</NavLink></li>
-                            
                             <li><NavLink to="/book-table" activeClassName="active" className="btn btn-primary">Book A Table</NavLink></li>
                         </ul>
                     </nav>
                 </div>
-                <div className="middle">
-                    <div className="left">
-                        <h1 className='text-white'>Enjoy Our Delicious Meal</h1>
-                        <p class="text-white">Chào mừng bạn đến với Mận Chill Garden- nơi hòa mình vào không gian lãng mạn, ấm áp và thưởng thức những món ăn ngon. Mận Chill Garden là điểm đến lý tưởng cho những buổi hẹn hò, gặp gỡ bạn bè, các buổi tiệc sinh nhật, hay đơn giản là bữa ăn gia đình.</p>
-                        <a className="btn btn-primary">Book A Table</a>
+                {showMiddle && ( // Kiểm tra điều kiện để hiển thị phần middle
+                    <div className="middle">
+                        <div className="left">
+                            <h1 className='text-white'>Enjoy Our Delicious Meal</h1>
+                            <p className="text-white">Chào mừng bạn đến với Mận Chill Garden- nơi hòa mình vào không gian lãng mạn, ấm áp và thưởng thức những món ăn ngon. Mận Chill Garden là điểm đến lý tưởng cho những buổi hẹn hò, gặp gỡ bạn bè, các buổi tiệc sinh nhật, hay đơn giản là bữa ăn gia đình.</p>
+                            <a className="btn btn-primary">Book A Table</a>
+                        </div>
+                        <div className="right">
+                            <img className="img-head" src={hero} width="400px" height="400px" alt="Hero" />
+                        </div>
                     </div>
-                    <div className="right">
-                        <img className="img-head" src={hero} width="400px" height="400px" alt="Hero" />
-                    </div>
-                </div>
+                )}
             </div>
         </header>
     );

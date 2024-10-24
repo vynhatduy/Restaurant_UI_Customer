@@ -7,7 +7,6 @@ const Menu = () => {
         <div className="home">
             <TieuDeMenu/>
             <ProductList />
-            <DetailList/>
         </div>
     );
 };
