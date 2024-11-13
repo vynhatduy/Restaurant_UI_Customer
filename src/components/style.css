@@ -1,0 +1,24 @@
+﻿.img-hover-zoom {
+    overflow: hidden;
+}
+
+    .img-hover-zoom img {
+        transition: transform 0.5s ease; /* Hiệu ứng chuyển đổi */
+    }
+
+        .img-hover-zoom img:hover {
+            transform: scale(1.2); /* Phóng to 20% khi hover */
+        }
+
+.star-rating {
+    font-size: 40px; /* Tăng kích thước font chữ cho ngôi sao */
+}
+
+.star {
+    color: black; /* Màu đen cho ngôi sao rỗng */
+    transition: color 0.3s ease; /* Hiệu ứng chuyển màu */
+}
+
+    .star.filled {
+        color: gold; /* Màu vàng cho ngôi sao đầy */
+    }
