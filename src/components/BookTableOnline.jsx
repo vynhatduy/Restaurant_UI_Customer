@@ -1,178 +1,407 @@
-import React from 'react';
-import Booking from '../pages/Booking';
-import '../index.css'
-const BookTable = () => {
+  import React, { useState, useEffect } from "react";
+  import Dialog from "@mui/material/Dialog";
+  import DialogTitle from "@mui/material/DialogTitle";
+  import DialogContent from "@mui/material/DialogContent";
+  import DialogActions from "@mui/material/DialogActions";
+  import Button from "@mui/material/Button";
+  import axios from "axios";
+  import Booking from '../pages/Booking';
+
+  const BookTable = () => {
+    const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDecorationDialogOpen, setDecorationDialogOpen] = useState(false);
+  const [tables, setTables] = useState([]);
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedDecoration, setSelectedDecoration] = useState(null);
+  const [decorations, setDecorations] = useState([]);
+  const [isBirthdayTable, setIsBirthdayTable] = useState(false);
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [guestCount, setGuestCount] = useState("");
+  const [request, setRequest] = useState("");
+
+  const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState(""); // Thông báo từ API
+
+  const [errors, setErrors] = useState({
+    phone: "",
+    email: "",
+    date: "",
+    time: "",
+    guestCount: "",
+  });
+
+  const apiUrl = `${import.meta.env.VITE_CLOUD_VPS_API}`;
+
+
+    // Fetch danh sách bàn
+    const fetchTables = async () => {
+      try {
+        const response = await axios.get(apiUrl + "/Ban/all");
+        setTables(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách bàn:", error);
+      }
+    };
+
+    // Fetch danh sách trang trí (chỉ khi chọn bàn sinh nhật)
+    const fetchDecorations = async () => {
+      try {
+        const response = await axios.get(apiUrl + "/TrangTri/all");
+        setDecorations(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách mẫu trang trí:", error);
+      }
+    };
+
+    // Mở dialog bàn
+    const openTableDialog = () => {
+      fetchTables();
+      setDialogOpen(true);
+    };
+
+    // Mở dialog trang trí
+    const openDecorationDialog = () => {
+      fetchDecorations();
+      setDecorationDialogOpen(true);
+    };
+
+    // Đóng dialog
+    const closeDialog = () => {
+      setDialogOpen(false);
+    };
+
+    // Đóng dialog trang trí
+    const closeDecorationDialog = () => {
+      setDecorationDialogOpen(false);
+    };
+
+    // Xử lý chọn bàn
+    const handleSelectTable = (table) => {
+      setSelectedTable(table);
+      closeDialog();
+    };
+
+    // Xử lý chọn mẫu trang trí
+    const handleSelectDecoration = (decoration) => {
+      setSelectedDecoration(decoration);
+      closeDecorationDialog();
+    };
+
+    // Chuyển giờ từ format HH:mm sang kiểu số nguyên
+    const convertTimeToInt = (timeStr) => {
+      const hour = parseInt(timeStr.split(":")[0]);
+      return hour >= 9 && hour <= 20 ? hour : 9; // Giới hạn giờ từ 9 đến 20
+    };
+
+    // Xử lý gửi thông tin đặt bàn
+    const handleSubmit = async () => {
+      const newErrors = {
+        phone: "",
+        email: "",
+        date: "",
+        time: "",
+        guestCount: "",
+      };
+      let isValid = true;
+  
+      const phoneRegex = /^[0-9]{10}$/;
+      if (!phoneRegex.test(phone)) {
+        newErrors.phone = "Số điện thoại phải gồm 10 chữ số.";
+        isValid = false;
+      }
+  
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!emailRegex.test(email)) {
+        newErrors.email = "Email không hợp lệ.";
+        isValid = false;
+      }
+  
+      const currentDate = new Date();
+      const selectedDate = new Date(date);
+      if (selectedDate < currentDate) {
+        newErrors.date = "Ngày đặt không thể là ngày trước hiện tại.";
+        isValid = false;
+      }
+  
+      const gioDat = convertTimeToInt(time);
+      if (gioDat < 9 || gioDat > 20) {
+        newErrors.time = "Giờ đặt chỉ từ 9h sáng đến 8h tối.";
+        isValid = false;
+      }
+  
+      const numGuests = parseInt(guestCount);
+      if (numGuests <= 0 || numGuests >= 50) {
+        newErrors.guestCount = "Số lượng khách phải lớn hơn 0 và nhỏ hơn 50.";
+        isValid = false;
+      }
+  
+      if (!isValid) {
+        setErrors(newErrors);
+        return;
+      }
+  
+      const bookingDetails = {
+        laBanSinhNhat: isBirthdayTable,
+        hoTen: name,
+        email: email,
+        sdt: phone,
+        ngayDat: selectedDate.toISOString(),
+        gioDat: gioDat,
+        soNguoiThamGia: numGuests,
+        yeuCau: request,
+        maBan: selectedTable ? selectedTable.maBan : null,
+        maTrangTri: isBirthdayTable && selectedDecoration ? selectedDecoration.maTrangTri : "TT001",
+      };
+  
+      try {
+        const response = await axios.post(apiUrl + "/DatBan/create", bookingDetails);
+        setDialogMessage(response.data.message);
+  
+        if (response.data.status) {
+          setOpenSuccessDialog(true);
+        } else {
+          setOpenErrorDialog(true);
+        }
+      } catch (error) {
+        console.error("Lỗi khi gửi yêu cầu:", error);
+        setDialogMessage("Đã xảy ra lỗi khi đặt bàn. Vui lòng thử lại!");
+        setOpenErrorDialog(true);
+      }
+    };
+  
+
+    // Effect để load danh sách trang trí khi chọn bàn sinh nhật
+    useEffect(() => {
+      if (isBirthdayTable) {
+        fetchDecorations();
+      } else {
+        setDecorations([]); // Nếu không chọn bàn sinh nhật, xóa danh sách trang trí
+        setSelectedDecoration(null); // Reset trang trí đã chọn
+      }
+    }, [isBirthdayTable]);
+
     return (
+      <div className="p-6 bg-gray-100 rounded-lg shadow-md max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold pb-9 text-center">ĐẶT BÀN ONLINE</h1>
 
+        <form className="grid grid-cols-6 gap-6">
+          {/* Thông tin khách hàng */}
+          <div className="col-span-6 sm:col-span-3">
+            <label className="block text-sm font-medium text-gray-700">Họ và tên</label>
+            <input
+              type="text"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="col-span-6 sm:col-span-3">
+            <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
+            <input
+              type="tel"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          </div>
 
-        <div className="inline-flex rounded-lg border border-gray-100 bg-gray-100 p-1 row flex justify-center">
-            <Booking />
-            <div>
+          {/* Chọn bàn */}
+          <div className="col-span-6">
+            <label className="block text-sm font-medium text-gray-700">Chọn bàn</label>
+            <button
+              type="button"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 bg-blue-500 text-white"
+              onClick={openTableDialog}
+            >
+              Chọn bàn
+            </button>
+          </div>
 
+          {/* Chọn bàn sinh nhật */}
+          <div className="col-span-6">
+          Đặt bàn sinh nhật
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="birthday"
+                checked={isBirthdayTable}
+                onChange={() => setIsBirthdayTable(true)}
+              />
+              <span className="ml-2">Có</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="birthday"
+                checked={!isBirthdayTable}
+                onChange={() => setIsBirthdayTable(false)}
+              />
+              <span className="ml-2">Không</span>
+            </label>
+          </div>
 
-                <section className="bg-white">
-                    <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-                        <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
-                            <img
-                                alt=""
-                                src="https://images.unsplash.com/photo-1617195737496-bc30194e3a19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-                                className="absolute inset-0 h-full w-full object-cover opacity-80"
-                            />
-
-                            <div className="hidden lg:relative lg:block lg:p-12">
-                                <a className="block text-white" href="#">
-                                    <span className="sr-only">Home</span>
-                                    <svg
-                                        className="h-8 sm:h-10"
-                                        viewBox="0 0 28 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M0.41 10.3847C1.14777 7.4194 2.85643 4.7861 5.2639 2.90424C7.6714 1.02234 10.6393 0 13.695 0C16.7507 0 19.7186 1.02234 22.1261 2.90424C24.5336 4.7861 26.2422 7.4194 26.98 10.3847H25.78C23.7557 10.3549 21.7729 10.9599 20.11 12.1147C20.014 12.1842 19.9138 12.2477 19.81 12.3047H19.67C19.5662 12.2477 19.466 12.1842 19.37 12.1147C17.6924 10.9866 15.7166 10.3841 13.695 10.3841C11.6734 10.3841 9.6976 10.9866 8.02 12.1147C7.924 12.1842 7.8238 12.2477 7.72 12.3047H7.58C7.4762 12.2477 7.376 12.1842 7.28 12.1147C5.6171 10.9599 3.6343 10.3549 1.61 10.3847H0.41ZM23.62 16.6547C24.236 16.175 24.9995 15.924 25.78 15.9447H27.39V12.7347H25.78C24.4052 12.7181 23.0619 13.146 21.95 13.9547C21.3243 14.416 20.5674 14.6649 19.79 14.6649C19.0126 14.6649 18.2557 14.416 17.63 13.9547C16.4899 13.1611 15.1341 12.7356 13.745 12.7356C12.3559 12.7356 11.0001 13.1611 9.86 13.9547C9.2343 14.416 8.4774 14.6649 7.7 14.6649C6.9226 14.6649 6.1657 14.416 5.54 13.9547C4.4144 13.1356 3.0518 12.7072 1.66 12.7347H0V15.9447H1.61C2.39051 15.924 3.154 16.175 3.77 16.6547C4.908 17.4489 6.2623 17.8747 7.65 17.8747C9.0377 17.8747 10.392 17.4489 11.53 16.6547C12.1468 16.1765 12.9097 15.9257 13.69 15.9447C14.4708 15.9223 15.2348 16.1735 15.85 16.6547C16.9901 17.4484 18.3459 17.8738 19.735 17.8738C21.1241 17.8738 22.4799 17.4484 23.62 16.6547ZM23.62 22.3947C24.236 21.915 24.9995 21.664 25.78 21.6847H27.39V18.4747H25.78C24.4052 18.4581 23.0619 18.886 21.95 19.6947C21.3243 20.156 20.5674 20.4049 19.79 20.4049C19.0126 20.4049 18.2557 20.156 17.63 19.6947C16.4899 18.9011 15.1341 18.4757 13.745 18.4757C12.3559 18.4757 11.0001 18.9011 9.86 19.6947C9.2343 20.156 8.4774 20.4049 7.7 20.4049C6.9226 20.4049 6.1657 20.156 5.54 19.6947C4.4144 18.8757 3.0518 18.4472 1.66 18.4747H0V21.6847H1.61C2.39051 21.664 3.154 21.915 3.77 22.3947C4.908 23.1889 6.2623 23.6147 7.65 23.6147C9.0377 23.6147 10.392 23.1889 11.53 22.3947C12.1468 21.9165 12.9097 21.6657 13.69 21.6847C14.4708 21.6623 15.2348 21.9135 15.85 22.3947C16.9901 23.1884 18.3459 23.6138 19.735 23.6138C21.1241 23.6138 22.4799 23.1884 23.62 22.3947Z"
-                                            fill="currentColor"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-                                    Welcome to
-                                </h2>
-
-                                {/* <p className="mt-4 leading-relaxed text-white/90">
-                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi nam dolorum aliquam,
-                                    quibusdam aperiam voluptatum.
-                                </p> */}
-                            </div>
-                        </section>
-
-                        <main
-                            className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
-                        >
-                            <div className="max-w-xl lg:max-w-3xl">
-                                <div className="relative -mt-16 block lg:hidden">
-                                    <a
-                                        className="inline-flex size-16 items-center justify-center rounded-full bg-white text-blue-600 sm:size-20"
-                                        href="#"
-                                    >
-                                        <span className="sr-only">Home</span>
-                                        <svg
-                                            className="h-8 sm:h-10"
-                                            viewBox="0 0 28 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M0.41 10.3847C1.14777 7.4194 2.85643 4.7861 5.2639 2.90424C7.6714 1.02234 10.6393 0 13.695 0C16.7507 0 19.7186 1.02234 22.1261 2.90424C24.5336 4.7861 26.2422 7.4194 26.98 10.3847H25.78C23.7557 10.3549 21.7729 10.9599 20.11 12.1147C20.014 12.1842 19.9138 12.2477 19.81 12.3047H19.67C19.5662 12.2477 19.466 12.1842 19.37 12.1147C17.6924 10.9866 15.7166 10.3841 13.695 10.3841C11.6734 10.3841 9.6976 10.9866 8.02 12.1147C7.924 12.1842 7.8238 12.2477 7.72 12.3047H7.58C7.4762 12.2477 7.376 12.1842 7.28 12.1147C5.6171 10.9599 3.6343 10.3549 1.61 10.3847H0.41ZM23.62 16.6547C24.236 16.175 24.9995 15.924 25.78 15.9447H27.39V12.7347H25.78C24.4052 12.7181 23.0619 13.146 21.95 13.9547C21.3243 14.416 20.5674 14.6649 19.79 14.6649C19.0126 14.6649 18.2557 14.416 17.63 13.9547C16.4899 13.1611 15.1341 12.7356 13.745 12.7356C12.3559 12.7356 11.0001 13.1611 9.86 13.9547C9.2343 14.416 8.4774 14.6649 7.7 14.6649C6.9226 14.6649 6.1657 14.416 5.54 13.9547C4.4144 13.1356 3.0518 12.7072 1.66 12.7347H0V15.9447H1.61C2.39051 15.924 3.154 16.175 3.77 16.6547C4.908 17.4489 6.2623 17.8747 7.65 17.8747C9.0377 17.8747 10.392 17.4489 11.53 16.6547C12.1468 16.1765 12.9097 15.9257 13.69 15.9447C14.4708 15.9223 15.2348 16.1735 15.85 16.6547C16.9901 17.4484 18.3459 17.8738 19.735 17.8738C21.1241 17.8738 22.4799 17.4484 23.62 16.6547ZM23.62 22.3947C24.236 21.915 24.9995 21.664 25.78 21.6847H27.39V18.4747H25.78C24.4052 18.4581 23.0619 18.886 21.95 19.6947C21.3243 20.156 20.5674 20.4049 19.79 20.4049C19.0126 20.4049 18.2557 20.156 17.63 19.6947C16.4899 18.9011 15.1341 18.4757 13.745 18.4757C12.3559 18.4757 11.0001 18.9011 9.86 19.6947C9.2343 20.156 8.4774 20.4049 7.7 20.4049C6.9226 20.4049 6.1657 20.156 5.54 19.6947C4.4144 18.8757 3.0518 18.4472 1.66 18.4747H0V21.6847H1.61C2.39051 21.664 3.154 21.915 3.77 22.3947C4.908 23.1889 6.2623 23.6147 7.65 23.6147C9.0377 23.6147 10.392 23.1889 11.53 22.3947C12.1468 21.9165 12.9097 21.6657 13.69 21.6847C14.4708 21.6623 15.2348 21.9135 15.85 22.3947C16.9901 23.1884 18.3459 23.6138 19.735 23.6138C21.1241 23.6138 22.4799 23.1884 23.62 22.3947Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-                                    </a>
-
-                                </div>
-
-                                <div className='flex justify-center text-4xl 	 font-bold pb-9'>
-                                    <h1>ĐẶT BÀN ONLINE</h1>
-                                </div>
-
-                                <form action="#" className="mt-8 grid grid-cols-6 gap-6">
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-                                            First Name
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            id="FirstName"
-                                            name="first_name"
-                                            className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
-                                            Last Name
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            id="LastName"
-                                            name="last_name"
-                                            className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6">
-                                        <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Email </label>
-
-                                        <input
-                                            type="email"
-                                            id="Email"
-                                            name="email"
-                                            className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-                                    
-                                    <div className="col-span-6">
-                                        <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Phone number </label>
-
-                                        <input
-                                            type="phone"
-                                            id="phone"
-                                            name="phone"
-                                            className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm placeholder:'+84...' text-red-950"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6">
-                                        <label  htmlFor="Email" className="block text-sm font-medium font-bold text-gray-700"> Date </label>
-
-                                        <input
-                                           type="date" 
-                                           id="date-picker"
-                                            name="email"
-                                            className="mt-1 w-full rounded-md border-gray-900 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6">
-                                        <label  htmlFor="Email" className="block text-sm font-medium font-bold text-gray-700">Time </label>
-
-                                        <input
-                                           type="time" 
-
-                                           id="time-picker"
-                                            name="email"
-                                            className="     ` mt-1 w-full rounded-md border-gray-00 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-
-
-
-
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Table </label>
-
-                                        <input
-                                            type="number"
-                                            id="positive-integer-input"
-                                             min="1"
-                                            name="password"
-                                            className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                                        />
-                                    </div>
-                                    <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                                        <button className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-black transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">Đặt ngay </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </main>
-                    </div>
-                </section>
+          {/* Chọn mẫu trang trí khi bàn sinh nhật */}
+          {isBirthdayTable && (
+            <div className="col-span-6">
+              <label className="block text-sm font-medium text-gray-700">Chọn mẫu trang trí</label>
+              <button
+                type="button"
+                className="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 bg-blue-500 text-white"
+                onClick={openDecorationDialog}
+              >
+                Chọn mẫu trang trí
+              </button>
             </div>
+          )}
 
-        </div>
+          {/* Thêm các trường khác như ngày, giờ, số lượng khách */}
+          <div className="col-span-6 sm:col-span-3">
+            <label className="block text-sm font-medium text-gray-700">Ngày đặt</label>
+            <input
+              type="date"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
+          </div>
+          <div className="col-span-6 sm:col-span-3">
+            <label className="block text-sm font-medium text-gray-700">Giờ đặt</label>
+            <input
+              type="time"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+            {errors.time && <p className="text-red-500 text-sm">{errors.time}</p>}
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium text-gray-700">Số lượng khách</label>
+            <input
+              type="number"
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={guestCount}
+              onChange={(e) => setGuestCount(e.target.value)}
+            />
+            {errors.guestCount && <p className="text-red-500 text-sm">{errors.guestCount}</p>}
+          </div>
+
+          <div className="col-span-6">
+            <label className="block text-sm font-medium text-gray-700">Yêu cầu</label>
+            <textarea
+              className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+              value={request}
+              onChange={(e) => setRequest(e.target.value)}
+            />
+          </div>
+
+          <div className="col-span-6 flex justify-center">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              Đặt bàn
+            </Button>
+          </div>
+        </form>
+
+        {/* Dialog chọn bàn */}
+        <Dialog open={isDialogOpen} onClose={closeDialog} fullWidth>
+          <DialogTitle>Chọn Bàn</DialogTitle>
+          <DialogContent>
+            <div className="flex flex-wrap gap-4 justify-center"> {/* Sử dụng flexbox với flex-wrap */}
+              {tables.map((table) => (
+                <div
+                  key={table.maBan}
+                  className="flex flex-col items-center border rounded-lg p-4 hover:shadow-lg cursor-pointer"
+                  onClick={() => handleSelectTable(table)}
+                >
+                  <img
+                    src={table.hinhAnh}
+                    alt={`Bàn ${table.soBan}`}
+                    className="w-32 h-32 object-cover rounded-lg mb-2"
+                  />
+                  <h3 className="text-lg font-semibold">Bàn: {table.soBan}</h3>
+                  <p>Số chỗ ngồi: {table.soChoNgoi}</p>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDialog}>Đóng</Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog chọn trang trí */}
+        <Dialog open={isDecorationDialogOpen} onClose={closeDecorationDialog}>
+          <DialogTitle>Chọn mẫu trang trí</DialogTitle>
+          <DialogContent>
+            <div className="flex flex-wrap gap-2"> {/* Dùng flexbox và thêm khoảng cách */}
+              {decorations.map((decoration) => (
+                <div key={decoration.maTrangTri} className="flex items-center space-x-4 border p-2 rounded-lg">
+                  <img
+                    src={decoration.hinhAnh} // Hình ảnh mẫu trang trí
+                    alt={`Trang trí ${decoration.tenTrangTri}`}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                  <div className="flex flex-col">
+                    <span>{decoration.tenTrangTri}</span>
+                    <span>{decoration.moTa}</span> {/* Mô tả mẫu trang trí */}
+                  </div>
+                  <Button
+                    onClick={() => handleSelectDecoration(decoration)}
+                    className="ml-auto"
+                  >
+                    Chọn
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDecorationDialog}>Đóng</Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog thành công */}
+      <Dialog open={openSuccessDialog} onClose={() => setOpenSuccessDialog(false)}>
+        <DialogTitle>Thông báo</DialogTitle>
+        <DialogContent>
+          <p>{dialogMessage}</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenSuccessDialog(false)}>Đóng</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog thất bại */}
+      <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)}>
+        <DialogTitle>Thông báo</DialogTitle>
+        <DialogContent>
+          <p>{dialogMessage}</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenErrorDialog(false)}>Đóng</Button>
+        </DialogActions>
+      </Dialog>
+      </div>
     );
-};
+  };
 
-export default BookTable;
+  export default BookTable;
